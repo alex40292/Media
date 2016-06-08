@@ -1,5 +1,6 @@
 package by.medved.model;
 
+// gnkdnssn
 public class Media
 {
 	private String artist;

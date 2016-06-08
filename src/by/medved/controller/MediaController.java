@@ -7,7 +7,7 @@ import by.medved.model.Media;
 public interface MediaController
 {
 	/**
-	 * 
+	 * Выполнение команды введенной с консоли(если такая существует)
 	 */
 	void command(String cmd);
 

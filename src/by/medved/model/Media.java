@@ -1,10 +1,36 @@
 package by.medved.model;
 
+/**
+ * Медиаресурсы
+ */
 public class Media
 {
+	private final String INFO = "%10s\t%10s\t%8d\t%5d";
+	
+	@Override
+	public String toString()
+	{
+		return String.format(INFO, getArtist(), getName(), getYear(), getDuration());
+	}
+	
+	/**
+	 * Имя артиста медиаресурса 
+	 */
 	private String artist;
+	
+	/**
+	 * Название
+	 */
 	private String mediaFile;
+	
+	/**
+	 * Год выхода
+	 */
 	private int year;
+	
+	/**
+	 * Длительность
+	 */
 	private int duration;
 	
 	public Media(String artist, String mediaFile, int year, int duration)

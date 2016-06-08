@@ -23,6 +23,9 @@ public class MediaControllerImpl implements MediaController
 		mediaFiles = new ShowMediaFiles();
 	}
 
+	/**
+	 * Мапа для хранения списка медиаресурсов, распределенных по группам
+	 */
 	private Map<String, List<Media>> groups = new HashMap<>();
 
 	{
@@ -57,6 +60,17 @@ public class MediaControllerImpl implements MediaController
 		return checkInteger(text, inputString);
 	}
 
+	/**
+	 * Мапа для выбора действия в приложении в зависимости от введенной команды
+	 * 		add - добавление элемента
+	 * 		create - создание группы
+	 * 		delete - удаление медиафайла
+	 * 		deleteFrom - удаление из избранного
+	 * 		edit - редактирование медиафайла
+	 * 		show - показать все файлы в выбранной группе
+	 * 		move - переместить медиафайл в группу
+	 * 		find - поиск файла по заданным параметрам
+	 */
 	private Map<String, Process> ACTION = new HashMap<>();
 
 	{
@@ -128,17 +142,29 @@ public class MediaControllerImpl implements MediaController
 
 		ACTION.put("show", () ->
 		{
-			mediaFiles.show(groups.get("all"));
-		});
-
-		ACTION.put("showLiked", () ->
-		{
-			mediaFiles.show(groups.get("liked"));
+			System.out.println("Группы");
+			showAllGroups();
+			
+			System.out.println("Введите название группы: ");
+			String group = checkString("Введите название группы: ", input.nextLine());
+			
+			mediaFiles.show(groups.get(group));
 		});
 
 		ACTION.put("find", () ->
 		{
+			System.out.println("Введите название группы: ");
+			String group = checkString("Введите название группы: ", input.nextLine());
+
+			System.out.println("Введите название параметра: ");
+			String param = checkString("Введите название параметра: ", input.nextLine());
 			
+			System.out.println("Введите значение изменяемого параметра: ");
+			String value = checkString("Введите значение изменяемого параметра: ", input.nextLine());
+			
+			for(Media media : groups.get(group)) {
+				if(media.getArtist().equals(value)) System.out.println(media.toString());
+			}
 		});
 
 		ACTION.put("move", () ->
@@ -160,9 +186,9 @@ public class MediaControllerImpl implements MediaController
 	}
 
 	@Override
-	public List<Media> getMedia()
+	public List<Media> getMedia(String name)
 	{
-		return groups.get("all");
+		return groups.get(name);
 	}
 
 	@Override

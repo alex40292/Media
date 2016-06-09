@@ -28,7 +28,6 @@ public class Main
 			
 			controllerImpl.command(cmd);
 			
-			if(cmd.equalsIgnoreCase("end")) break;
-		} while (true);
+		} while (!cmd.equalsIgnoreCase("end"));
 	}
 }

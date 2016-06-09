@@ -18,7 +18,7 @@ public class ShowMediaFiles
 	public void show(List<Media> list)
 	{
 		int number = 0;
-		System.out.println(String.format(HEAD, "№", "Artist", "Name", "Yeat", "Duration"));
+		System.out.println(String.format(HEAD, "№", "Artist", "Name", "Year", "Duration"));
 		for (Media media : list)
 		{
 			System.out.println(

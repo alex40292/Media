@@ -63,12 +63,11 @@ public class MediaControllerImpl implements MediaController
 	/**
 	 * Мапа для выбора действия в приложении в зависимости от введенной команды
 	 * 		add - добавление элемента
-	 * 		create - создание группы
-	 * 		delete - удаление медиафайла
-	 * 		deleteFrom - удаление из избранного
-	 * 		edit - редактирование медиафайла
-	 * 		show - показать все файлы в выбранной группе
-	 * 		move - переместить медиафайл в группу
+	 * 		create - создание группы 
+	 * 		delete - удаление медиафайла в выбранной группе  
+	 * 		edit - редактирование медиафайла 
+	 * 		show - показать все файлы в выбранной группе 
+	 * 		move - переместить медиафайл в группу 
 	 * 		find - поиск файла по заданным параметрам
 	 */
 	private Map<String, Process> ACTION = new HashMap<>();
@@ -104,23 +103,18 @@ public class MediaControllerImpl implements MediaController
 
 		ACTION.put("delete", () ->
 		{
-			mediaFiles.show(groups.get("all"));
-
-			System.out.println("Введите номер медиафайла: ");
-			int number = checkInteger("Введите номер медиафайла: ", input.nextLine());
-
-			groups.get("all").remove(number);
-
-		});
-
-		ACTION.put("deleteFrom", () ->
-		{
-			mediaFiles.show(groups.get("liked"));
-
-			System.out.println("Введите номер медиафайла: ");
-			int number = checkInteger("Введите номер медиафайла: ", input.nextLine());
+			System.out.println("Группы");
+			showAllGroups();
 			
-			groups.get("liked").remove(number);
+			System.out.println("Введите название группы: ");
+			String group = checkString("Введите название группы: ", input.nextLine());
+
+			mediaFiles.show(groups.get(group));
+			
+			System.out.println("Введите номер медиафайла: ");
+			int number = checkInteger("Введите номер медиафайла: ", input.nextLine());
+
+			groups.get(group).remove(number);
 
 		});
 
@@ -130,10 +124,10 @@ public class MediaControllerImpl implements MediaController
 
 			System.out.println("Введите номер медиафайла: ");
 			int number = checkInteger("Введите номер медиафайла: ", input.nextLine());
-			
+
 			System.out.println("Введите название изменяемого параметра: ");
 			String param = checkString("Введите название изменяемого параметра: ", input.nextLine());
-			
+
 			System.out.println("Введите значение изменяемого параметра: ");
 			String value = checkString("Введите значение изменяемого параметра: ", input.nextLine());
 
@@ -144,26 +138,30 @@ public class MediaControllerImpl implements MediaController
 		{
 			System.out.println("Группы");
 			showAllGroups();
-			
+
 			System.out.println("Введите название группы: ");
 			String group = checkString("Введите название группы: ", input.nextLine());
-			
+
 			mediaFiles.show(groups.get(group));
 		});
 
 		ACTION.put("find", () ->
 		{
+			System.out.println("Группы");
+			showAllGroups();
+			
 			System.out.println("Введите название группы: ");
 			String group = checkString("Введите название группы: ", input.nextLine());
 
 			System.out.println("Введите название параметра: ");
 			String param = checkString("Введите название параметра: ", input.nextLine());
-			
+
 			System.out.println("Введите значение изменяемого параметра: ");
 			String value = checkString("Введите значение изменяемого параметра: ", input.nextLine());
-			
-			for(Media media : groups.get(group)) {
-				if(media.getArtist().equals(value)) System.out.println(media.toString());
+
+			for (Media media : groups.get(group))
+			{
+				findMediaByParam(media, param, value);
 			}
 		});
 
@@ -186,6 +184,36 @@ public class MediaControllerImpl implements MediaController
 	}
 
 	@Override
+	public void findMediaByParam(Media mediaFile, String param, String value)
+	{
+		String resultSearch = null;
+		
+		switch (param.toLowerCase())
+		{
+			case "name":
+				if (mediaFile.getName().equalsIgnoreCase(value))
+					resultSearch = mediaFile.toString();
+				break;
+			case "artist":
+				if (mediaFile.getArtist().equalsIgnoreCase(value))
+					resultSearch = mediaFile.toString();
+				break;
+			case "year":
+				if (mediaFile.getYear() == Integer.parseInt(value))
+					resultSearch = mediaFile.toString();
+				break;
+			case "duration":
+				if (mediaFile.getDuration() == Integer.parseInt(value))
+					resultSearch = mediaFile.toString();
+				break;
+			default:
+				resultSearch = "Такого параметра не существует!"; 
+		}
+		if (resultSearch != null) 
+			System.out.println(resultSearch);
+	}
+
+	@Override
 	public List<Media> getMedia(String name)
 	{
 		return groups.get(name);
@@ -196,18 +224,18 @@ public class MediaControllerImpl implements MediaController
 	{
 		switch (param.toLowerCase())
 		{
-		case "name":
-			mediaFile.setName(value);
-			break;
-		case "artist":
-			mediaFile.setArtist(value);
-			break;
-		case "year":
-			mediaFile.setYear(Integer.parseInt(value));
-			break;
-		case "duration":
-			mediaFile.setDuration(Integer.parseInt(value));
-			break;
+			case "name":
+				mediaFile.setName(value);
+				break;
+			case "artist":
+				mediaFile.setArtist(value);
+				break;
+			case "year":
+				mediaFile.setYear(Integer.parseInt(value));
+				break;
+			case "duration":
+				mediaFile.setDuration(Integer.parseInt(value));
+				break;
 		}
 	}
 

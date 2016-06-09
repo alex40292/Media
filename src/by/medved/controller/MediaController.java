@@ -7,7 +7,7 @@ import by.medved.model.Media;
 public interface MediaController
 {
 	/**
-	 * Выполнение команды введенной с консоли(если такая существует)
+	 * Выполнение введенной с консоли команды(если такая существует)
 	 */
 	void command(String cmd);
 
@@ -35,4 +35,9 @@ public interface MediaController
 	 * Редактирование элемента
 	 */
 	void editMedia(Media mediaFile, String param, String value);
+
+	/**
+	 * Поиск по заданному параметру
+	 */
+	void findMediaByParam(Media mediaFile, String param, String value);
 }

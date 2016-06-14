@@ -12,11 +12,6 @@ public interface MediaController
 	void command(String cmd);
 
 	/**
-	 * Показ всех существующих групп
-	 */
-	void showAllGroups();
-
-	/**
 	 * Получить список медиаресурсов выбранной группы
 	 */
 	List<Media> getMedia(String name);

@@ -4,23 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 
 import by.medved.controller.MediaController;
 import by.medved.controller.Process;
 import by.medved.model.Media;
-import by.medved.view.ShowMediaFiles;
+import by.medved.view.ShowInfo;
 
 public class MediaControllerImpl implements MediaController
 {
 	private Scanner input;
-	private ShowMediaFiles mediaFiles;
+	private ShowInfo show;
 
 	public MediaControllerImpl()
 	{
 		input = new Scanner(System.in);
-		mediaFiles = new ShowMediaFiles();
+		show = new ShowInfo();
 	}
 
 	/**
@@ -33,11 +32,26 @@ public class MediaControllerImpl implements MediaController
 		groups.put("liked", new ArrayList<>());
 	}
 
+	public void inputUserCommand()
+	{
+		show.showAllCommand();
+		String userCommand;
+		do
+		{
+			System.out.println("Введите вашу команду: ");
+			userCommand = input.nextLine();
+			
+			command(userCommand);
+			
+		} while (!userCommand.equalsIgnoreCase("end"));
+	}
+	
 	@Override
 	public String checkString(String text, String inputString)
 	{
 		if (inputString.isEmpty())
 		{
+			System.out.println("Некорректный ввод! Вы оставили строку пустой.");
 			System.out.println(text);
 			inputString = input.nextLine();
 			checkString(text, inputString);
@@ -54,12 +68,13 @@ public class MediaControllerImpl implements MediaController
 			return year;
 		} catch (Exception exception)
 		{
+			System.out.println("Некорректный ввод! Попробуйте ввести число.");
 			System.out.println(text);
 			inputString = input.nextLine();
 		}
 		return checkInteger(text, inputString);
 	}
-
+	
 	/**
 	 * Мапа для выбора действия в приложении в зависимости от введенной команды
 	 * 		add - добавление элемента
@@ -94,7 +109,7 @@ public class MediaControllerImpl implements MediaController
 
 		ACTION.put("create", () ->
 		{
-			showAllGroups();
+			show.showAllGroups(groups);
 			System.out.println("Введите название новой группы: ");
 			String name = checkString("Введите название новой группы: ", input.nextLine());
 
@@ -104,12 +119,12 @@ public class MediaControllerImpl implements MediaController
 		ACTION.put("delete", () ->
 		{
 			System.out.println("Группы");
-			showAllGroups();
+			show.showAllGroups(groups);
 			
 			System.out.println("Введите название группы: ");
 			String group = checkString("Введите название группы: ", input.nextLine());
 
-			mediaFiles.show(groups.get(group));
+			show.showMedia(groups.get(group));
 			
 			System.out.println("Введите номер медиафайла: ");
 			int number = checkInteger("Введите номер медиафайла: ", input.nextLine());
@@ -120,7 +135,7 @@ public class MediaControllerImpl implements MediaController
 
 		ACTION.put("edit", () ->
 		{
-			mediaFiles.show(groups.get("all"));
+			show.showMedia(groups.get("all"));
 
 			System.out.println("Введите номер медиафайла: ");
 			int number = checkInteger("Введите номер медиафайла: ", input.nextLine());
@@ -137,18 +152,18 @@ public class MediaControllerImpl implements MediaController
 		ACTION.put("show", () ->
 		{
 			System.out.println("Группы");
-			showAllGroups();
+			show.showAllGroups(groups);
 
 			System.out.println("Введите название группы: ");
 			String group = checkString("Введите название группы: ", input.nextLine());
 
-			mediaFiles.show(groups.get(group));
+			show.showMedia(groups.get(group));
 		});
 
 		ACTION.put("find", () ->
 		{
 			System.out.println("Группы");
-			showAllGroups();
+			show.showAllGroups(groups);
 			
 			System.out.println("Введите название группы: ");
 			String group = checkString("Введите название группы: ", input.nextLine());
@@ -156,8 +171,8 @@ public class MediaControllerImpl implements MediaController
 			System.out.println("Введите название параметра: ");
 			String param = checkString("Введите название параметра: ", input.nextLine());
 
-			System.out.println("Введите значение изменяемого параметра: ");
-			String value = checkString("Введите значение изменяемого параметра: ", input.nextLine());
+			System.out.println("Введите значение параметра: ");
+			String value = checkString("Введите значение параметра: ", input.nextLine());
 
 			for (Media media : groups.get(group))
 			{
@@ -168,10 +183,10 @@ public class MediaControllerImpl implements MediaController
 		ACTION.put("move", () ->
 		{
 			System.out.println("Медиафайлы");
-			mediaFiles.show(groups.get("all"));
+			show.showMedia(groups.get("all"));
 
 			System.out.println("Группы");
-			showAllGroups();
+			show.showAllGroups(groups);
 
 			System.out.println("Введите название группы: ");
 			String group = checkString("Введите название группы: ", input.nextLine());
@@ -222,6 +237,8 @@ public class MediaControllerImpl implements MediaController
 	@Override
 	public void editMedia(Media mediaFile, String param, String value)
 	{
+		String resultSearch = null;
+		
 		switch (param.toLowerCase())
 		{
 			case "name":
@@ -236,28 +253,22 @@ public class MediaControllerImpl implements MediaController
 			case "duration":
 				mediaFile.setDuration(Integer.parseInt(value));
 				break;
+			default:
+				resultSearch = "Такого группы не существует!";
 		}
+		if (resultSearch != null) 
+			System.out.println(resultSearch);
 	}
 
 	@Override
-	public void command(String cmd)
+	public void command(String userCommand)
 	{
-		if (!ACTION.containsKey(cmd))
+		if (!ACTION.containsKey(userCommand))
 		{
-			System.out.println("Некорректный ввод!");
+			System.out.println(userCommand.equalsIgnoreCase("end") ? "Программа завершена!" : "Некорректный ввод!!");
 		} else
 		{
-			ACTION.get(cmd).process();
+			ACTION.get(userCommand).process();
 		}
 	}
-
-	@Override
-	public void showAllGroups()
-	{
-		for (Entry<String, List<Media>> entry : groups.entrySet())
-		{
-			System.out.println(entry.getKey() + " - " + groups.get(entry.getKey()).size() + " file(s)");
-		}
-	}
-
 }

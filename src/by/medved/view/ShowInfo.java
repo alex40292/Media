@@ -33,10 +33,10 @@ public class ShowInfo
 	 */
 	public void showAllCommand()
 	{
-		String commandNames = "\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s";
+		String commandNames = "\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s";
 		System.out.println(String.format(commandNames, "add - добавление элемента", "create - создание группы", "delete - удаление медиафайла в выбранной группе",
 				"edit - редактирование медиафайла", "show - показать все файлы в выбранной группе", "move - переместить медиафайл в группу",
-				"find - поиск файла по заданным параметрам"));
+				"find - поиск файла по заданным параметрам", "end - завершение программы"));
 	}
 	
 	/**
